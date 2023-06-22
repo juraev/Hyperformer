@@ -69,7 +69,7 @@ class Feeder(Dataset):
         self.std_map = data.transpose((0, 2, 4, 1, 3)).reshape((N * T * M, C * V)).std(axis=0).reshape((C, 1, V, 1))
 
     def __len__(self):
-        return len(self.data_dict)*self.repeat
+        return len(self.label)*self.repeat
 
     def __iter__(self):
         return self
@@ -85,8 +85,8 @@ class Feeder(Dataset):
         return X
 
     def __getitem__(self, index):
-        label = self.label[index % len(self.data_dict)]
-        value = self.data[index % len(self.data_dict)]
+        label = self.label[index % len(self.label)]
+        value = self.data[index % len(self.label)]
 
         if self.train_val == 'train':
             random.random()
