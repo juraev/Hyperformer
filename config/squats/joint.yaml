@@ -23,7 +23,7 @@ model_args:
   num_class: 2
   num_point: 19
   num_person: 1
-  graph: graph.ucla.Graph
+  graph: graph.squats.Graph
   graph_args:
     labeling_mode: 'spatial'
   joint_label: [0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4]
