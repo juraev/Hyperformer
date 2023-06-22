@@ -145,7 +145,7 @@ class Feeder(Dataset):
 
         if 'bone' in self.data_path:
             data_bone = np.zeros_like(data)
-            for bone_idx in range(20):
+            for bone_idx in range(17):
                 data_bone[:, self.bone[bone_idx][0] - 1, :] = data[:, self.bone[bone_idx][0] - 1, :] - data[:, self.bone[bone_idx][1] - 1, :]
             data_bone[:, 2, :] = data[:, 2, :]
             data = data_bone
