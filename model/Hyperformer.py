@@ -283,7 +283,7 @@ class MHSA(nn.Module):
         for i in range(num_point-1, 0, -1):
             if np.any(h[i]-h[i-1]):
                 h[i] = h[i] - h[i - 1]
-                print(self.hops.shape, h)
+                print(self.hops.shape, h.shape)
                 self.hops += i*h[i]
             else:
                 continue
