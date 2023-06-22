@@ -6,6 +6,10 @@ import math
 
 from torch.utils.data import Dataset
 
+drop_index = [1, 2, 3, 4, 5, 6, 13, 14, 17, 18]
+
+ner_perm = [0, 1, 3, 5, 7, 2, 4, 6, 8, 9, 11, 13, 15, 17, 10, 12, 14, 16, 18]
+
 def normalize(attempt):
     mean = np.mean(attempt)
     std = np.std(attempt)
@@ -20,6 +24,7 @@ class Feeder(Dataset):
 
         self.squats_root = 'data/squats/'
         self.time_steps = 100
+        self.num_joints = 19
 
         
         self.label = []
@@ -54,8 +59,14 @@ class Feeder(Dataset):
         poses = [[list(pose.values()) for pose in attempt] for attempt in poses]
         
         self.data = [normalize(np.array(attempt)) for attempt in poses]
-        self.label = [int(attempt['feedback_score'] < 2) for attempt in attempts]
+        
+        # drop joints that are not used, delete elements with indices in drop_index
+        self.data = [np.delete(attempt, drop_index, axis=1) for attempt in self.data]
 
+        # permute joints to match the order in the graph
+        self.data = [attempt[:, ner_perm, :] for attempt in self.data]
+
+        self.label = [int(attempt['feedback_score'] < 2) for attempt in attempts]
 
     def get_mean_map(self):
         data = self.data
@@ -96,9 +107,9 @@ class Feeder(Dataset):
             scalerValue = np.reshape(scalerValue, (-1, 3))
             scalerValue = (scalerValue - np.min(scalerValue,axis=0)) / (np.max(scalerValue,axis=0) - np.min(scalerValue,axis=0))
             scalerValue = scalerValue*2-1
-            scalerValue = np.reshape(scalerValue, (-1, 29, 3))
+            scalerValue = np.reshape(scalerValue, (-1, self.num_joints, 3))
 
-            data = np.zeros( (self.time_steps, 29, 3) )
+            data = np.zeros( (self.time_steps, self.num_joints, 3) )
 
             value = scalerValue[:,:,:]
             length = value.shape[0]
@@ -122,9 +133,9 @@ class Feeder(Dataset):
             scalerValue = (scalerValue - np.min(scalerValue,axis=0)) / (np.max(scalerValue,axis=0) - np.min(scalerValue,axis=0))
             scalerValue = scalerValue*2-1
 
-            scalerValue = np.reshape(scalerValue, (-1, 29, 3))
+            scalerValue = np.reshape(scalerValue, (-1, self.num_joints, 3))
 
-            data = np.zeros( (self.time_steps, 29, 3) )
+            data = np.zeros( (self.time_steps, self.num_joints, 3) )
 
             value = scalerValue[:,:,:]
             length = value.shape[0]
