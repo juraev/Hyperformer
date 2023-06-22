@@ -26,12 +26,6 @@ class Feeder(Dataset):
         self.time_steps = 100
         self.num_joints = 19
 
-        
-        self.label = []
-        for index in range(len(self.data_dict)):
-            info = self.data_dict[index]
-            self.label.append(int(info['label']) - 1)
-
         self.debug = debug
         self.data_path = data_path
         self.label_path = label_path
