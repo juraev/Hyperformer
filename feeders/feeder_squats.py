@@ -36,14 +36,21 @@ class Feeder(Dataset):
         self.normalization = normalization
         self.use_mmap = use_mmap
         self.repeat = repeat
-        self.load_data()
 
+        if 'train' in self.label_path:
+            self.train_val = 'train'
+            file = 's_train.json'
+        else:
+            self.train_val = 'val'
+            file = 's_test.json'
+
+        self.load_data(file)
         if normalization:
             self.get_mean_map()
 
 
-    def load_data(self):
-        json_file = self.squats_root + 'squats_data.json'
+    def load_data(self, file):
+        json_file = self.squats_root + file
         with open(json_file) as f:
             content = f.read()
         
